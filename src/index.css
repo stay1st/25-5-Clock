@@ -15,7 +15,8 @@ html {
 }
 
 #dancerImg {
-    height: 100vh;
+    height: 800px;
+    width: 200px;
     background-attachment: fixed;
     overflow: hidden;
     position: fixed;

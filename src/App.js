@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CountDown from "./CountDown.js";
-import './alert.mp3'
+import './alert.mp3';
 import "./App.css";
 
 
@@ -48,14 +48,10 @@ export default function App() {
     }
   };
 
-  const playAudio = () => {
-    audio.duration = 0
-    return audio.play()
-  };
-
   const notOnBreak = (prev, yesRightNow) => {
     if (prev <= 0 && !yesRightNow){
-      playAudio()
+      audio.duration = 0
+      audio.play()
       yesRightNow = true
       setCanIhaveABreak(yesRightNow)
       return toggle
