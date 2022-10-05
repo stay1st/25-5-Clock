@@ -7,25 +7,3 @@ html {
     font-size: 1rem;
     background-color: black;
 }
-
-#image-container {
-    width: 80%;
-    max-width: 685px;
-
-}
-
-#dancerImg {
-    height: 800px;
-    width: 200px;
-    background-attachment: fixed;
-    overflow: hidden;
-    position: fixed;
-    clip: auto;
-    transform: translateX(-370px);
-    z-index: -1;
-}
-@media screen and (max-width: 400px) {
-    #dancerImg {
-        transform: translateX(-270px);
-}
-}

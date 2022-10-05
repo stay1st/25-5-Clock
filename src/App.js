@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CountDown from "./CountDown.js";
+import dancer from './dancer.jpg';
 import './alert.mp3';
 import "./App.css";
 
@@ -19,7 +20,7 @@ export default function App() {
 
 
   const [canIHaveABreak, setCanIhaveABreak] = useState(false);
-  const [audio, setAudio] = useState(new Audio('./alert.mp3'));
+  const audio = new Audio('./alert.mp3');
 
   const appendTime = (count) => {
     const min = Math.floor(count / 60)
@@ -77,7 +78,6 @@ export default function App() {
             setTimeInSession((prev) => notOnBreak(prev, yesRightNow))
           let oneSecondFoward = add(nextDate, 1000)
           nextDate = oneSecondFoward
-          console.log(nextDate)
         }
       }, 30);
 
@@ -98,6 +98,14 @@ export default function App() {
   };
 
   return (
+    <>
+    <div>
+      <img 
+        src={dancer} 
+        alt="dancer-background-black" 
+        id="dancerImage"
+        />
+    </div>
     <div className="flex-container">
       <div id="Break">
         <CountDown
@@ -134,5 +142,6 @@ export default function App() {
       </button>
       </div>
     </div>
+    </>
   )
 };
