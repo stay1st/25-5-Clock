@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import CountDown from "./CountDown.js";
 import dancer from './dancer.jpg';
-import './alert.mp3';
+import audioBeep from './alert.mp3';
 import "./App.css";
 
 
@@ -16,36 +16,36 @@ export default function App() {
   const [timeInSession, setTimeInSession] = useState(initialTimeSession);
   const [breakLength, setBreakLength] = useState(initialBreakLength);
   const [sessionLength, setSessionLength] = useState(initialSessionLength);
+  
   const [toggle, setToggle] = useState(false);
-
-
   const [canIHaveABreak, setCanIhaveABreak] = useState(false);
-  const [audio] = useState(new Audio('./alert.mp3'));
-
-  const appendSessionOrBreakLength = (count) => {
-    const min = Math.floor(count / 60)
-    return min
-  }
-
-  const appendTime = (count) => {
-    const min = Math.floor(count / 60)
-    const sec = count % 60
-      return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec)
-  };
+  const [timeLabel, setTimeLabel] = useState(false);
 
   const add = (prev, value) => {
     return prev + value
   };
 
+  const appendTime = useCallback((count) => {
+    //console.log('appendTime:', count);
+    const min = Math.floor(count / 60)
+    const sec = count % 60
+      return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec)
+  }, [timeInSession, sessionLength]);
+
   const changeClock = (quantity, type) => {
-    console.log(breakLength, quantity, type)
+    //console.log('changeClock', breakLength, quantity, type)
     if (type === "break") {
       if (breakLength <= 60 && quantity < 0) {
+        //console.log('changeClock => breakLength', breakLength)
+        return;
+      } else if (breakLength === 3600 && quantity > 0) {
         return;
       }
       setBreakLength((prev) => add(prev , quantity));
-    } else {
+    } else if (type === 'session'){
       if (sessionLength <= 60 && quantity < 0) {
+        return;
+      } else if (sessionLength === 3600 && quantity > 0) {
         return;
       }
       setSessionLength((prev) => add(prev, quantity))
@@ -55,20 +55,15 @@ export default function App() {
     }
   };
 
-  const notOnBreak = (prev, yesRightNow) => {
-    if (prev <= 0 && yesRightNow === false){
-      audio.play()
-      yesRightNow = true
-      setCanIhaveABreak(yesRightNow)
-      return toggle
-    } else if(prev <= 0 && yesRightNow === true) {
-      setCanIhaveABreak(false)
-      return breakLength
-    }
-    return prev -1
-  };
+  const appendSessionOrBreakLength = useCallback((count) => {
+    //console.log('appendSessionOrBreakLength:', count)
+    // (count) is `breakLength` or `sessionLength`. Invoked from inline method returned from CountDown component
+    const min = Math.floor(count / 60)
+    return min
+  }, [timeInSession]);
 
-  const playPauseTimer = () => {
+  const playPauseTimer = useCallback(() => {
+    console.log('playPauseTimer', toggle)
 
     let prevDate = new Date().getTime()
     let nextDate = new Date().getTime() + 1000
@@ -92,10 +87,57 @@ export default function App() {
       clearInterval(localStorage.getItem('int'))
     }
     setToggle(!toggle);
-  };
+  }, [toggle]);
+
+  const notOnBreak = useCallback((prev, yesRightNow) => {
+    let curr = prev - 1;
+    if (curr === 0 && yesRightNow === false){
+      playSound();
+      yesRightNow = true
+      setCanIhaveABreak(true)
+      setTimeLabel(true)
+      return breakLength
+    } else if(curr === 0 && yesRightNow === true) {
+      playSound();
+      setCanIhaveABreak(false)
+      setTimeLabel(false)
+      return sessionLength
+    }
+    return curr
+  }, [playPauseTimer]);
+
+  const toggleSession = () => {
+    if (!toggle) {
+      setToggle(true);
+      return playPauseTimer()
+    } else if (toggle) {
+      setToggle(false);
+      return playPauseTimer()
+    };
+  }
+
+  const playSound = useCallback(() => {
+    let audioBeep = document.getElementById('beep');
+    /* if you neeed to check promise for 'pending' console.log(audioBeep.play()) */
+    audioBeep.currentTime = 0;
+    const beepPromise = audioBeep.play()
+      if (beepPromise !== undefined) {
+        beepPromise
+          .then(_ => {
+            console.log("%caudio played auto", 'color: green;');
+          })
+          .catch(error => {
+            console.err(`Error ${error} Check "playSound", Import and <audio> element.`);
+          });
+      }
+  }, [canIHaveABreak]);
 
   const resetState = () => {
-    playPauseTimer()
+    clearInterval(localStorage.getItem('int'));
+    setToggle(false); // clearInterval was b4
+    setTimeLabel(false);
+    setCanIhaveABreak(false);
+    // Don't see a reason currently to `set !canIhaveABreak` since it's triggered to true at 0:00
     setTimeInSession(initialTimeSession)
     setBreakLength(initialBreakLength)
     setSessionLength(initialSessionLength)
@@ -112,40 +154,44 @@ export default function App() {
     </div>
     <div className="flex-container">
       <div id="Break">
+      {/* All of the Break attributes/properties/methods */}
         <CountDown
-          h3label={'break-label'} //User Story #1
-          title={"Break Length"} //User Story #1
-          decrement={'break-decrement'} //User Story #3
-          increment={'break-increment'} //User Story #4
-          lengthCounter={'break-length'} // User Story #5
+          h3label={'break-label'} 
+          title={"Break Length"} 
+          decrement={'break-decrement'} 
+          increment={'break-increment'} 
+          lengthCounter={'break-length'} 
           changeClock={changeClock}
           type={"break"}
           count={breakLength}
           appendSeshOrBreak={appendSessionOrBreakLength}
         />
       </div>
+      {/* Middle Component. A Timer counting down */}
       <div>
-        <h3 id="timer-label">{!toggle ? 'Break' : 'Session'}</h3>
-        <audio src={audio} />
+        <h3 id="timer-label">{ timeLabel ? 'Break' : 'Session' }</h3>
+        <audio id='beep' src={audioBeep} />
       </div>
       <div id="heading2">
         <h2 id="time-left" className="timer">{appendTime(timeInSession)}</h2>
       </div>
       <div id="session">
+      {/* All of the Session attributes/properties/methods */}
         <CountDown
-          h3label={'session-label'} // User Story #2
-          title={"Session Length"} // User Story #2
-          decrement={'session-decrement'} // User Story #3
-          increment={'session-increment'} // User Story #4
-          lengthCounter={'session-length'} // User Story #5
+          h3label={'session-label'} 
+          title={"Session Length"} 
+          decrement={'session-decrement'} 
+          increment={'session-increment'} 
+          lengthCounter={'session-length'} 
           changeClock={changeClock}
           type={"session"}
           count={sessionLength}
           appendSeshOrBreak={appendSessionOrBreakLength}
         />
       </div>
+      {/* Play/Pause/Reset */}
       <div id="play-refresh">
-      <button id='start_stop' onClick={playPauseTimer}>
+      <button id='start_stop' onClick={toggleSession}>
         <i className="fa-solid fa-play"></i>
       </button>
       <button id="reset" onClick={resetState}>
