@@ -21,7 +21,8 @@
       transform: translateY(20px);
   }
 
-  #timer {
+  #session-length,
+  #break-length {
       margin: 0px;
       padding: 12px;
       -webkit-backdrop-filter: blur(05px);
@@ -144,11 +145,13 @@ p {
   background: var(--primary-gradient);
 }
 
-#timer {
+#break-length,
+#session-length {
   transform: translateY(-20px);
 }
 
-#timer {
+#session-length,
+#break-length {
     font-size: 3rem;
 }
 
