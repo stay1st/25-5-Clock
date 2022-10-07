@@ -16,7 +16,6 @@ export default function App() {
   const [timeInSession, setTimeInSession] = useState(initialTimeSession);
   const [breakLength, setBreakLength] = useState(initialBreakLength);
   const [sessionLength, setSessionLength] = useState(initialSessionLength);
-  
   const [toggle, setToggle] = useState(false);
   const [canIHaveABreak, setCanIhaveABreak] = useState(false);
   const [timeLabel, setTimeLabel] = useState(false);
@@ -90,20 +89,20 @@ export default function App() {
   }, [toggle]);
 
   const notOnBreak = useCallback((prev, yesRightNow) => {
-    let curr = prev - 1;
-    if (curr === 0 && yesRightNow === false){
+    console.log('notOnBreak', prev, yesRightNow)
+    if (prev === 0 && yesRightNow === false){
       playSound();
       yesRightNow = true
       setCanIhaveABreak(true)
       setTimeLabel(true)
       return breakLength
-    } else if(curr === 0 && yesRightNow === true) {
+    } else if(prev === 0 && yesRightNow === true) {
       playSound();
       setCanIhaveABreak(false)
       setTimeLabel(false)
       return sessionLength
     }
-    return curr
+    return prev -1
   }, [playPauseTimer]);
 
   const toggleSession = () => {
@@ -118,7 +117,6 @@ export default function App() {
 
   const playSound = useCallback(() => {
     let audioBeep = document.getElementById('beep');
-    /* if you neeed to check promise for 'pending' console.log(audioBeep.play()) */
     audioBeep.currentTime = 0;
     const beepPromise = audioBeep.play()
       if (beepPromise !== undefined) {
@@ -137,7 +135,6 @@ export default function App() {
     setToggle(false); // clearInterval was b4
     setTimeLabel(false);
     setCanIhaveABreak(false);
-    // Don't see a reason currently to `set !canIhaveABreak` since it's triggered to true at 0:00
     setTimeInSession(initialTimeSession)
     setBreakLength(initialBreakLength)
     setSessionLength(initialSessionLength)
