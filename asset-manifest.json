@@ -1,14 +1,15 @@
 {
-  "files": {
-    "main.css": "/react-gh-pages/static/css/main.ca2213ab.css",
-    "main.js": "/react-gh-pages/static/js/main.c76ea21c.js",
-    "static/media/alert.mp3": "/react-gh-pages/static/media/alert.00110b231c46ffbe9057.mp3",
-    "index.html": "/react-gh-pages/index.html",
-    "main.ca2213ab.css.map": "/react-gh-pages/static/css/main.ca2213ab.css.map",
-    "main.c76ea21c.js.map": "/react-gh-pages/static/js/main.c76ea21c.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.ca2213ab.css",
-    "static/js/main.c76ea21c.js"
-  ]
+  "main.css": "/twenty-five-five-clock/static/css/main.a0a706b7.chunk.css",
+  "main.js": "/twenty-five-five-clock/static/js/main.187f1fae.chunk.js",
+  "main.js.map": "/twenty-five-five-clock/static/js/main.187f1fae.chunk.js.map",
+  "runtime~main.js": "/twenty-five-five-clock/static/js/runtime~main.6bfea44b.js",
+  "runtime~main.js.map": "/twenty-five-five-clock/static/js/runtime~main.6bfea44b.js.map",
+  "static/js/2.3edbe4ce.chunk.js": "/twenty-five-five-clock/static/js/2.3edbe4ce.chunk.js",
+  "static/js/2.3edbe4ce.chunk.js.map": "/twenty-five-five-clock/static/js/2.3edbe4ce.chunk.js.map",
+  "index.html": "/twenty-five-five-clock/index.html",
+  "precache-manifest.0d39b60c5c1bd0ea48c085403ca8bb8c.js": "/twenty-five-five-clock/precache-manifest.0d39b60c5c1bd0ea48c085403ca8bb8c.js",
+  "service-worker.js": "/twenty-five-five-clock/service-worker.js",
+  "static/css/main.a0a706b7.chunk.css.map": "/twenty-five-five-clock/static/css/main.a0a706b7.chunk.css.map",
+  "static/media/alert.mp3": "/twenty-five-five-clock/static/media/alert.f4468bda.mp3",
+  "static/media/dancer.jpg": "/twenty-five-five-clock/static/media/dancer.0a78bdfe.jpg"
 }
